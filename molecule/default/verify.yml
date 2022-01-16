@@ -8,17 +8,17 @@
   tasks:
   - name: Set download directory if install only for the user
     set_fact:
-      helm_download_dir: "{{ ansible_user_dir }}/bin"
+      helm_runtime_dir: "{{ ansible_user_dir }}/bin"
     when: not helm_for_all_users | bool
 
   - name: Set download directory for all users to use
     set_fact:
-      helm_download_dir: "/usr/local/bin"
+      helm_runtime_dir: "/usr/local/bin"
     when: helm_for_all_users | bool
 
   - name: Find the helm file
     ansible.builtin.stat:
-      path: "{{ helm_download_dir }}/helm"
+      path: "{{ helm_runtime_dir }}/helm"
     register: helm_file
 
   - name: Assert that helm exists

@@ -1,0 +1,68 @@
+---
+- name: Install required software
+  package:
+    name: unzip
+    state: present
+
+- name: Set download directory if install only for the user
+  set_fact:
+    helm_runtime_dir: "{{ ansible_user_dir }}/bin"
+  when: not helm_for_all_users | bool
+
+- name: Set download directory for all users to use
+  set_fact:
+    helm_runtime_dir: "/usr/local/bin"
+  when: helm_for_all_users | bool
+
+- name: Create bin directory in users home if necessary for local install
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/bin"
+    state: directory
+    mode: 0755
+  when: not helm_for_all_users | bool
+
+- name: Download and unzip file
+  unarchive:
+    src: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
+    dest: "/tmp"
+    include: [ "linux-amd64/helm" ]
+    remote_src: yes
+  changed_when: False
+
+- name: Copy file to runtime directory
+  copy:
+    src: "/tmp/linux-amd64/helm"
+    dest: "{{ helm_runtime_dir }}"
+    mode: 0755
+    remote_src: yes
+
+- name: Cleanup source file
+  file:
+    path: "/tmp/linux-amd64/helm"
+    state: absent
+  changed_when: False
+
+- name: Configure autocompletion for the user onlycompr
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_user_dir }}/.{{ command_shell | lower }}rc"
+    regexp: '^source <(helm completion {{ command_shell | lower }})'
+    line: "source <(helm completion {{ command_shell | lower }})"
+  when: not helm_for_all_users
+
+- name: Set global profile file for bash
+  set_fact:
+    global_profile_file: /etc/profile
+  when: helm_for_all_users | bool and command_shell | lower == "bash"
+
+- name: Set global profile file for zsh
+  set_fact:
+    global_profile_file: /etc/zshenv
+  when: helm_for_all_users | bool and command_shell | lower == "zsh"
+
+- name: Configure autocompletion for all users
+  ansible.builtin.lineinfile:
+    path: "{{ global_profile_file }}"
+    regexp: '^source <(helm completion {{ command_shell | lower }})'
+    line: "source <(helm completion {{ command_shell | lower }})"
+  when: helm_for_all_users
+  become: yes

@@ -11,7 +11,7 @@ Poetry. Install it from <https://python-poetry.org/docs/>
 ## Role Variables
 
 ```yaml
-helm_version: latest     # It can also be a specifik version like v1.21.4
+helm_version: 3.7.2
 helm_for_all_users: true # If false it will install in in the users ~/bin directory
 command_shell: bash         # Must be bash or zsh
 ```

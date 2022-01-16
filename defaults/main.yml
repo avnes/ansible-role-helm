@@ -1,5 +1,5 @@
 ---
-helm_version: latest
+helm_version: 3.7.2
 helm_for_all_users: true
 
 command_shell: bash
