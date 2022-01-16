@@ -25,7 +25,6 @@
   unarchive:
     src: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
     dest: "/tmp"
-    include: [ "linux-amd64/helm" ]
     remote_src: yes
   changed_when: False
 
@@ -35,12 +34,6 @@
     dest: "{{ helm_runtime_dir }}"
     mode: 0755
     remote_src: yes
-
-- name: Cleanup source file
-  file:
-    path: "/tmp/linux-amd64/helm"
-    state: absent
-  changed_when: False
 
 - name: Configure autocompletion for the user onlycompr
   ansible.builtin.lineinfile:
