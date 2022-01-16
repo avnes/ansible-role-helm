@@ -1,0 +1,5 @@
+---
+helm_version: latest
+helm_for_all_users: true
+
+command_shell: bash
