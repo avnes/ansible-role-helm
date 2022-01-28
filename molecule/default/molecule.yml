@@ -20,6 +20,5 @@ provisioner:
 lint: |
   yamllint .
   ansible-lint
-  flake8
 verifier:
   name: ansible
