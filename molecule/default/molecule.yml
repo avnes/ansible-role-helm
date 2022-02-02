@@ -5,7 +5,7 @@ driver:
   name: docker
 platforms:
   - name: ansible-role-helm
-    image: docker.io/pycontribs/centos:8
+    image: ghcr.io/avnes/molecule-ubuntu:latest
     pre_build_image: true
 provisioner:
   name: ansible
