@@ -57,10 +57,6 @@
       assert:
         that: profile_file_reg.stat.exists
 
-    - name: Assert that profile file is ascii
-      assert:
-        that: profile_file_reg.stat.charset == "us-ascii"
-
     - name: Assert that profile file is readable
       assert:
         that: profile_file_reg.stat.readable
