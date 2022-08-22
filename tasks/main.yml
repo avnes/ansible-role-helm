@@ -1,16 +1,16 @@
 ---
 - name: Install required software
-  package:
+  ansible.builtin.package:
     name: unzip
     state: present
 
 - name: Set download directory if install only for the user
-  set_fact:
+  ansible.builtin.set_fact:
     helm_runtime_dir: "{{ ansible_user_dir }}/bin"
   when: not helm_for_all_users | bool
 
 - name: Set download directory for all users to use
-  set_fact:
+  ansible.builtin.set_fact:
     helm_runtime_dir: "/usr/local/bin"
   when: helm_for_all_users | bool
 
@@ -22,14 +22,14 @@
   when: not helm_for_all_users | bool
 
 - name: Download and unzip file
-  unarchive:
+  ansible.builtin.unarchive:
     src: "https://get.helm.sh/helm-v{{ helm_version }}-linux-amd64.tar.gz"
     dest: "/tmp"
     remote_src: yes
   changed_when: False
 
 - name: Copy file to runtime directory
-  copy:
+  ansible.builtin.copy:
     src: "/tmp/linux-amd64/helm"
     dest: "{{ helm_runtime_dir }}"
     mode: 0755
@@ -43,12 +43,12 @@
   when: not helm_for_all_users
 
 - name: Set global profile file for bash
-  set_fact:
+  ansible.builtin.set_fact:
     global_profile_file: /etc/profile
   when: helm_for_all_users | bool and command_shell | lower == "bash"
 
 - name: Set global profile file for zsh
-  set_fact:
+  ansible.builtin.set_fact:
     global_profile_file: /etc/zshenv
   when: helm_for_all_users | bool and command_shell | lower == "zsh"
 

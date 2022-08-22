@@ -7,12 +7,12 @@
     command_shell: bash
   tasks:
     - name: Set download directory if install only for the user
-      set_fact:
+      ansible.builtin.set_fact:
         helm_runtime_dir: "{{ ansible_user_dir }}/bin"
       when: not helm_for_all_users | bool
 
     - name: Set download directory for all users to use
-      set_fact:
+      ansible.builtin.set_fact:
         helm_runtime_dir: "/usr/local/bin"
       when: helm_for_all_users | bool
 
@@ -22,29 +22,29 @@
       register: helm_file
 
     - name: Print stat info
-      debug:
+      ansible.builtin.debug:
         msg: "{{ helm_file.stat }}"
 
     - name: Assert that helm exists
-      assert:
+      ansible.builtin.assert:
         that: helm_file.stat.exists
 
     - name: Assert that helm is executable
-      assert:
+      ansible.builtin.assert:
         that: helm_file.stat.executable
 
     - name: Establish the shell profile file if for the user
-      set_fact:
+      ansible.builtin.set_fact:
         profile_file: "{{ ansible_user_dir }}/.{{ command_shell | lower }}rc"
       when: not helm_for_all_users
 
     - name: Establish the bash profile file if for all users
-      set_fact:
+      ansible.builtin.set_fact:
         profile_file: /etc/profile
       when: helm_for_all_users | bool and command_shell | lower == "bash"
 
     - name: Establish the zsh profile file if for all users
-      set_fact:
+      ansible.builtin.set_fact:
         profile_file: /etc/zshenv
       when: helm_for_all_users | bool and command_shell | lower == "zsh"
 
@@ -54,19 +54,19 @@
       register: profile_file_reg
 
     - name: Assert that profile file exists
-      assert:
+      ansible.builtin.assert:
         that: profile_file_reg.stat.exists
 
     - name: Assert that profile file is readable
-      assert:
+      ansible.builtin.assert:
         that: profile_file_reg.stat.readable
 
     - name: Show the profile file
-      command: cat "{{ profile_file }}"
+      ansible.builtin.command: cat "{{ profile_file }}"
       register: cat_reg
       no_log: true
       changed_when: false
 
     - name: Assert that autocompletion is configured
-      assert:
+      ansible.builtin.assert:
         that: "'source <(helm completion {{ command_shell | lower }})' in cat_reg.stdout"
