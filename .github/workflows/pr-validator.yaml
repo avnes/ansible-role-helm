@@ -1,24 +1,11 @@
 name: Pull Request Validator
 on:
   pull_request:
+    types: [opened, reopened, synchronize]
     branches: ["main"]
 
   workflow_dispatch:
 
 jobs:
-  ansible:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-        with:
-          path: "${{ github.repository }}"
-      - name: Install Poetry
-        run: "curl -sSL https://install.python-poetry.org | python3 -"
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.9"
-      - name: Create ephemeral requirements.txt for pip
-        run: "cd ${{ github.repository }} && $HOME/.local/bin/poetry export --dev --output requirements.txt"
-      - name: Run Molecule test case
-        uses: robertdebock/molecule-action@6.0.1
+  shared:
+    uses: avnes/actions-workflows/.github/workflows/ansible-pr-validator.yaml@main
