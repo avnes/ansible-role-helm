@@ -14,12 +14,5 @@ on:
   workflow_dispatch:
 
 jobs:
-  auto-release:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: rymndhng/release-on-push-action@master
-        with:
-          bump_version_scheme: patch
-          tag_prefix: ""
+  shared:
+    uses: avnes/actions-workflows/.github/workflows/auto-release-on-merge.yaml@main
